@@ -153,8 +153,7 @@ public class VistaPrincipalController implements Initializable {
 	}
 
 	private void busquedaMediaMarkt() {
-		//String exePath = "C:\\Users\\Toni\\eclipse\\geckodriver-master\\geckodriver.exe";
-		String exePath = "//IEI_Selenium//geckodriver-master//geckodriver.exe";
+		String exePath = "geckodriver-master//geckodriver.exe";
 		System.setProperty("webdriver.gecko.driver", exePath);
 		DesiredCapabilities capabilities = DesiredCapabilities.firefox();
 		capabilities.setCapability("marionette", true);
@@ -162,31 +161,23 @@ public class VistaPrincipalController implements Initializable {
 		WebDriverWait waiting = new WebDriverWait(driver, 5);
 		driver.get("https://www.mediamarkt.es/");
 
-		WebElement campoDeBusqueda = driver.findElement(By.id("header__search--input"));
-		campoDeBusqueda.click();
-		campoDeBusqueda.sendKeys(textoBusqueda);
-
-		waiting.until(ExpectedConditions.presenceOfElementLocated(
-				By.xpath("/html/body/div[5]/footer/div/div[2]/div/div/div/div/eb-results/div[1]/div/a[1]")));
-
-		WebElement modoLista = driver.findElement(
-				By.xpath("/html/body/div[5]/footer/div/div[2]/div/div/div/div/eb-results/div[1]/div/a[1]"));
-		modoLista.click();
-
-		// WebElement ventanaBusqueda = driver.findElement(By.id("eb-body"));
-		EventFiringWebDriver eventFiringWebDriver = new EventFiringWebDriver(driver);
-		waiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//*[@id=\"homepage-content\"]")));
-		eventFiringWebDriver.executeScript("document.querySelector('#homepage-content').scrollTop=3000");
-		/*
-		 * JavascriptExecutor jse = (JavascriptExecutor) driver;
-		 * jse.executeScript("self.scrollBy(0,-1000)");
-		 * //((JavascriptExecutor)driver).executeScript(
-		 * "arguments[0].scrollIntoView(true)", ventanaBusqueda); window./
-		 */
+		driver.findElement(By.id("world_hogar-jardin")).click();
+		//driver.switchTo().activeElement();
+		WebElement cafeTe = driver.findElement(By.id("category_hogar-jardin--ctg-cafe"));
+		waiting.until(ExpectedConditions.visibilityOf(cafeTe));
+		cafeTe.findElement(By.xpath("./a/span")).click();
+		waiting.withTimeout(5, TimeUnit.SECONDS);
+		WebElement contenedorCategorias = driver.findElement(By.id("containerLeft"));
+		waiting.withTimeout(5, TimeUnit.SECONDS);
+		List<WebElement> categorias = contenedorCategorias.findElements(By.cssSelector("*[class^='categoriesTreeContainer'"));
+		System.out.println(categorias.size());
+		
+		
 	}
 
 	private void busquedaElCorteIngles() {
-		String exePath = "C:\\Users\\Toni\\eclipse\\geckodriver-master\\geckodriver.exe";
+		//String exePath = "C:\\Users\\Toni\\eclipse\\geckodriver-master\\geckodriver.exe";
+		String exePath = "geckodriver-master//geckodriver.exe";
 		System.setProperty("webdriver.gecko.driver", exePath);
 		DesiredCapabilities capabilities = DesiredCapabilities.firefox();
 		capabilities.setCapability("marionette", true);
@@ -255,8 +246,8 @@ public class VistaPrincipalController implements Initializable {
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		// busquedaMediaMarkt();
-		busquedaElCorteIngles();
+		busquedaMediaMarkt();
+		//busquedaElCorteIngles();
 		articulos = llenarObservableList(nombreArticulos);
 		listaArticulos.setItems(articulos);
 		marcas = llenarObservableList(marcasCafeteras);
