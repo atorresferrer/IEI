@@ -39,9 +39,6 @@ import javafx.scene.control.ListView;
 public class VistaPrincipalController implements Initializable {
 
 	@FXML
-	private ListView<CheckBox> listaArticulos;
-
-	@FXML
 	private CheckBox seleccionAmazon;
 
 	@FXML
@@ -58,16 +55,25 @@ public class VistaPrincipalController implements Initializable {
 
 	@FXML
 	private ListView<CheckBox> listaMarcas;
+	
+	@FXML
+	private ListView<CheckBox> listaArticulos;
 
 	private ObservableList<CheckBox> articulos;
 	private ObservableList<CheckBox> marcas;
-	private static ObservableList<Cafetera> cafeteras = FXCollections.observableArrayList();
-	//private ArrayList<Cafetera> cafeteras = new ArrayList<>();
 
+	private static ObservableList<Cafetera> cafeterasSeleccionadas = FXCollections.observableArrayList();
+	
+	// Informacion filtros
 	private ArrayList<String> articulosSeleccionados = new ArrayList<>();
 	private ArrayList<String> marcasSeleccionadas = new ArrayList<>();
 	private ArrayList<String> comerciosSeleccionados = new ArrayList<>();
-
+	
+	//Almacenamiento de todas as cafeteras
+	private ArrayList<Cafetera> cafeteras = new ArrayList<>();
+	
+	
+	
 	private String textoBusqueda = "Cafetera";
 
 	private String[] nombreArticulos = new String[] { "Cafeteras de capsulas", "Cafeteras de goteo",
@@ -100,7 +106,7 @@ public class VistaPrincipalController implements Initializable {
 	}
 
 	
-	public static ObservableList<Cafetera> getCafeteras() { return cafeteras; }
+	public static ObservableList<Cafetera> getCafeteras() { return cafeterasSeleccionadas; }
 	 
 
 	private void abrirResultado() {
@@ -153,8 +159,7 @@ public class VistaPrincipalController implements Initializable {
 	}
 
 	private void busquedaMediaMarkt() {
-		//String exePath = "C:\\Users\\Toni\\eclipse\\geckodriver-master\\geckodriver.exe";
-		String exePath = "//IEI_Selenium//geckodriver-master//geckodriver.exe";
+		String exePath = "geckodriver-master//geckodriver.exe";
 		System.setProperty("webdriver.gecko.driver", exePath);
 		DesiredCapabilities capabilities = DesiredCapabilities.firefox();
 		capabilities.setCapability("marionette", true);
@@ -162,34 +167,26 @@ public class VistaPrincipalController implements Initializable {
 		WebDriverWait waiting = new WebDriverWait(driver, 5);
 		driver.get("https://www.mediamarkt.es/");
 
-		WebElement campoDeBusqueda = driver.findElement(By.id("header__search--input"));
-		campoDeBusqueda.click();
-		campoDeBusqueda.sendKeys(textoBusqueda);
-
-		waiting.until(ExpectedConditions.presenceOfElementLocated(
-				By.xpath("/html/body/div[5]/footer/div/div[2]/div/div/div/div/eb-results/div[1]/div/a[1]")));
-
-		WebElement modoLista = driver.findElement(
-				By.xpath("/html/body/div[5]/footer/div/div[2]/div/div/div/div/eb-results/div[1]/div/a[1]"));
-		modoLista.click();
-
-		// WebElement ventanaBusqueda = driver.findElement(By.id("eb-body"));
-		EventFiringWebDriver eventFiringWebDriver = new EventFiringWebDriver(driver);
-		waiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//*[@id=\"homepage-content\"]")));
-		eventFiringWebDriver.executeScript("document.querySelector('#homepage-content').scrollTop=3000");
-		/*
-		 * JavascriptExecutor jse = (JavascriptExecutor) driver;
-		 * jse.executeScript("self.scrollBy(0,-1000)");
-		 * //((JavascriptExecutor)driver).executeScript(
-		 * "arguments[0].scrollIntoView(true)", ventanaBusqueda); window./
-		 */
+		driver.findElement(By.id("world_hogar-jardin")).click();
+		//driver.switchTo().activeElement();
+		WebElement cafeTe = driver.findElement(By.id("category_hogar-jardin--ctg-cafe"));
+		waiting.until(ExpectedConditions.visibilityOf(cafeTe));
+		cafeTe.findElement(By.xpath("./a/span")).click();
+		waiting.withTimeout(5, TimeUnit.SECONDS);
+		WebElement contenedorCategorias = driver.findElement(By.id("containerLeft"));
+		waiting.withTimeout(5, TimeUnit.SECONDS);
+		List<WebElement> categorias = contenedorCategorias.findElements(By.cssSelector("*[class^='categoriesTreeContainer'"));
+		System.out.println(categorias.size());
+		
+		
 	}
 
 	private void busquedaElCorteIngles() {
-		String exePath = "C:\\Users\\Toni\\eclipse\\geckodriver-master\\geckodriver.exe";
+		String exePath = "geckodriver-master//geckodriver.exe";
 		System.setProperty("webdriver.gecko.driver", exePath);
 		DesiredCapabilities capabilities = DesiredCapabilities.firefox();
 		capabilities.setCapability("marionette", true);
+		@SuppressWarnings("deprecation")
 		WebDriver driver = new FirefoxDriver(capabilities);
 		WebDriverWait waiting = new WebDriverWait(driver, 10);
 
@@ -252,7 +249,69 @@ public class VistaPrincipalController implements Initializable {
 
 		// System.out.println(elementosLi.get(1).findElement(By.xpath("./div[1]/div[1]/a/img")).click(););
 	}
+	
+	public ArrayList<Cafetera> filtrarBusqueda(ArrayList<String> comerciosSeleccionados,
+			ArrayList<String> marcasSeleccionadas, ArrayList<String> articulosSeleccionados,
+			ArrayList<Cafetera> cafeteras) {
+		ArrayList<Cafetera> resultado = new ArrayList<>();
 
+		cafeteras = filtroComercios(cafeteras, comerciosSeleccionados);
+		cafeteras = filtroMarcas(cafeteras, marcasSeleccionadas);
+		cafeteras = filtroArticulos(cafeteras, marcasSeleccionadas);
+
+		return resultado;
+	}
+	
+	private ArrayList<Cafetera> filtroComercios(ArrayList<Cafetera> cafeteras, ArrayList<String> comerciosSeleccionados){
+		ArrayList<Cafetera> resultado = new ArrayList<>();
+		
+		if(comerciosSeleccionados.size() != 0) { // Si no hay comercios seleccionados entonces nos quedamos con todas las cafeteras
+			for(Cafetera cafetera : cafeteras)  //para cada cafetera 
+				for(String comercio : comerciosSeleccionados) // recorremos los comercios seleccionados
+					for(Comercio comercioCafetera : cafetera.getListaComercios()) // y los comercios de la cafetera
+						if (comercioCafetera.isExiste() && comercioCafetera.getNombre().equals(comercio)) // si la cafetera tiene precio en el comercio seleccionado
+							resultado.add(cafetera); //la añadimos a la lista final
+		}
+		else
+			resultado = cafeteras;
+		
+		return resultado;
+	}
+	
+	
+	
+	private ArrayList<Cafetera> filtroMarcas(ArrayList<Cafetera> cafeteras, ArrayList<String> marcasSeleccionadas){
+		ArrayList<Cafetera> resultado = new ArrayList<>();
+		
+		if(marcasSeleccionadas.size() != 0) { //// Si no hay marcas seleccionadas entonces nos quedamos con todas las cafeteras
+			for(Cafetera cafetera : cafeteras)  //para cada cafetera 
+				for(String marca : marcasSeleccionadas) // recorremos las marcas seleccionadas
+					if(cafetera.getMarca().equals(marca)) // preguntando si coincide con la de la cafetera
+						resultado.add(cafetera); //la añadimos a la lista final
+		}
+		else
+			resultado = cafeteras;
+
+		return resultado;
+	}
+	
+	
+	private ArrayList<Cafetera> filtroArticulos(ArrayList<Cafetera> cafeteras, ArrayList<String> articulosSeleccionados){
+		ArrayList<Cafetera> resultado = new ArrayList<>();
+		
+		if(articulosSeleccionados.size() != 0) { // Si no hay articulos seleccionados entonces nos quedamos con todas las cafeteras
+			for(Cafetera cafetera : cafeteras)  //para cada cafetera 
+				for(String articulo : articulosSeleccionados) // recorremos los articulos seleccionados
+					if(cafetera.getTipo().equals(articulo)) // preguntando si coincide con el de la cafetera
+						resultado.add(cafetera); //la añadimos a la lista final
+		}
+		else
+			resultado = cafeteras;
+
+		return resultado;
+	}
+	
+	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		// busquedaMediaMarkt();

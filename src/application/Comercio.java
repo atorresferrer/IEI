@@ -15,10 +15,10 @@ public class Comercio {
 		this.nombre = nombre;
 		this.existe = false;
 	}
-	public Comercio(String nombre, String precio, boolean existe) {
+	public Comercio(String nombre, String precio) {
 		this.nombre = nombre;
 		this.precio = precio;
-		this.existe = existe;
+		this.existe = true;
 	}
 	public String getNombre() {
 		return nombre;
@@ -31,6 +31,7 @@ public class Comercio {
 	}
 	public void setPrecio(String precio) {
 		this.precio = precio;
+		this.existe = true;
 	}
 	public boolean isExiste() {
 		return existe;
