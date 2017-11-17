@@ -182,6 +182,7 @@ public class VistaPrincipalController implements Initializable {
 	}
 
 	private void busquedaElCorteIngles() {
+
 		String exePath = "geckodriver-master//geckodriver.exe";
 		System.setProperty("webdriver.gecko.driver", exePath);
 		DesiredCapabilities capabilities = DesiredCapabilities.firefox();
@@ -314,8 +315,8 @@ public class VistaPrincipalController implements Initializable {
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		// busquedaMediaMarkt();
-		busquedaElCorteIngles();
+		busquedaMediaMarkt();
+		//busquedaElCorteIngles();
 		articulos = llenarObservableList(nombreArticulos);
 		listaArticulos.setItems(articulos);
 		marcas = llenarObservableList(marcasCafeteras);
