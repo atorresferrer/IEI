@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.VistaPrincipalController">
+   <children>
+      <Text layoutX="51.0" layoutY="40.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Búsqueda de productos" wrappingWidth="475.13671875">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </Text>
+      <HBox layoutX="24.0" layoutY="65.0" prefHeight="714.0" prefWidth="950.0" AnchorPane.bottomAnchor="25.0" AnchorPane.leftAnchor="25.0" AnchorPane.rightAnchor="25.0">
+         <children>
+            <VBox prefHeight="320.0" prefWidth="500.0">
+               <children>
+                  <HBox prefHeight="328.0" prefWidth="497.0">
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Artículo     ">
+                           <HBox.margin>
+                              <Insets left="30.0" />
+                           </HBox.margin>
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Text>
+                        <ListView fx:id="listaArticulos" prefHeight="377.0" prefWidth="250.0">
+                           <HBox.margin>
+                              <Insets bottom="20.0" />
+                           </HBox.margin>
+                        </ListView>
+                     </children>
+                     <VBox.margin>
+                        <Insets top="20.0" />
+                     </VBox.margin>
+                  </HBox>
+                  <CheckBox fx:id="seleccionAmazon" disable="true" mnemonicParsing="false" text="Amazon">
+                     <VBox.margin>
+                        <Insets left="50.0" top="150.0" />
+                     </VBox.margin>
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                  </CheckBox>
+                  <CheckBox fx:id="seleccionCorteIngles" mnemonicParsing="false" text="El Corte Inglés">
+                     <VBox.margin>
+                        <Insets left="50.0" top="10.0" />
+                     </VBox.margin>
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                  </CheckBox>
+                  <CheckBox fx:id="seleccionMediaMarkt" mnemonicParsing="false" text="Media Markt">
+                     <VBox.margin>
+                        <Insets left="50.0" top="10.0" />
+                     </VBox.margin>
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                  </CheckBox>
+                  <CheckBox fx:id="seleccionFnac" disable="true" mnemonicParsing="false" text="Fnac">
+                     <VBox.margin>
+                        <Insets left="50.0" top="10.0" />
+                     </VBox.margin>
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                  </CheckBox>
+                  <Button fx:id="botonBuscar" mnemonicParsing="false" onAction="#buscar" prefHeight="25.0" prefWidth="80.0" text="Buscar">
+                     <VBox.margin>
+                        <Insets left="50.0" top="30.0" />
+                     </VBox.margin>
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                  </Button>
+               </children>
+            </VBox>
+            <VBox prefHeight="714.0" prefWidth="457.0">
+               <children>
+                  <HBox prefHeight="620.0" prefWidth="454.0">
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Marca     ">
+                           <HBox.margin>
+                              <Insets left="30.0" top="20.0" />
+                           </HBox.margin>
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Text>
+                        <ListView fx:id="listaMarcas" prefHeight="320.0" prefWidth="250.0">
+                           <HBox.margin>
+                              <Insets right="30.0" top="20.0" />
+                           </HBox.margin>
+                        </ListView>
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+   </children>
+</AnchorPane>

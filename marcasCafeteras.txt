@@ -1,0 +1,10 @@
+{"Bosch","Breville","De Longhi","Digrato","Electrolux","Illy","Jata","Jura","Kenwood","Krups","Lavazza","Marcilla","Menz & Konecke","Miele","Moulinex","Nescafe Dolce Gusto","OK","Orbegozo","Oster","Philips","Russell Hobbs","Saeco","Saivod","Scanpart","Severin","Smeg","Solac","Tassimo","Taurus","Tecnhogar","Tecnnhogar","Tristar","Ufesa","Whirlpool","Wmf"}
+/html/body/div[5]/footer/div/div[2]/div/div/div/div/eb-results/div[1]/div/a[1]
+/html/body/div[5]/footer/div/div[2]/div/div/div/div/eb-results/div[3]/eb-facets/div[2]/div[1]/eb-category-facet/nav/div[2]/ul/eb-category-item/li/a
+/html/body/div[5]/footer/div/div[2]/div/div/div/div/eb-results/div[4]/div/eb-result[122]/div/div[2]/a/h2
+//*[@id="eb-body"]
+#eb-body
+html#ls-global.js.rgba.no-touchevents.generatedcontent.cssanimations.csscolumns.csscolumns-width.no-csscolumns-span.csscolumns-fill.csscolumns-gap.csscolumns-rule.csscolumns-rulecolor.csscolumns-rulestyle.csscolumns-rulewidth.no-csscolumns-breakbefore.no-csscolumns-breakafter.no-csscolumns-breakinside.csstransforms.flexbox.open--navigation.navi--fixed body#mm-wrapper.responsive.page-home.mm-body.header__search--visible div.contentspot footer#page-footer.footer div#footer_page-footer.wrapper.fg-container.fg-initialized div.fg-box.bpx0.bpy1.bsx5.bsy1.mpx0.mpy1.msx4.msy1.spx0.spy1.ssx3.ssy1.fg-box-size-x-4 div.cms_html_container div#EmpathyBrokerUI.EmpathyBrokerUI div#eb-searchField.opened div#eb-body
+driver.switchTo().window(new ArrayList<String>(driver.getWindowHandles()).get(1));
+            driver.close();
+            driver.switchTo().window(new ArrayList<String>(driver.getWindowHandles()).get(0));
