@@ -24,6 +24,8 @@ import org.openqa.selenium.support.events.EventFiringWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -73,11 +75,11 @@ public class VistaPrincipalController implements Initializable {
 	private ArrayList<String> comerciosSeleccionados = new ArrayList<>();
 	
 	//Almacenamiento de todas as cafeteras
-	private ArrayList<Cafetera> cafeteras = new ArrayList<>();
+	private static ArrayList<Cafetera> cafeteras = new ArrayList<>();
 	
 	
 	
-	private String textoBusqueda = "Cafetera";
+	//private final String TEXTO_BUSQUEDA = "Cafetera";
 
 	private String[] nombreArticulos = new String[] { "Cafeteras de capsulas", "Cafeteras de goteo",
 			"Cafeteras expresso manual", "Cafeteras italianas", "Cafeteras de capsulas", "Cafeteras super automaticas",
@@ -107,23 +109,29 @@ public class VistaPrincipalController implements Initializable {
 		}
 
 	}
-
 	
-	public static ObservableList<Cafetera> getCafeteras() { return cafeterasSeleccionadas; }
+
+	/*
+	 * Devuelve las cafeteras para poder recuperarlas desde la ventana de resultados,
+	 * lo hacemos estatico para no tener que crear una instancia de VistaPrincipalController
+	 */
+	public static ArrayList <Cafetera> getCafeteras() { return cafeteras; }
 	 
 
 	private void abrirResultado() {
 		try {
 			FXMLLoader miCargador = new FXMLLoader(getClass().getResource("/application/VistaResultado.fxml"));
 			AnchorPane root = (AnchorPane) miCargador.load();
-			VistaResultadoController conf = miCargador.<VistaResultadoController>getController();
+			//VistaResultadoController conf = miCargador.<VistaResultadoController>getController();
 			// conf.iniciar();
 			Scene scene = new Scene(root, 1000, 800);
 			Stage stage = new Stage();
 			stage.setScene(scene);
 			stage.showAndWait();
-		} catch (IOException e) {
 		}
+		catch (IOException e) {}
+		catch (NullPointerException e) {}
+		
 	}
 
 	private ArrayList<String> obtenerSeleccion(ObservableList<CheckBox> list) {
@@ -220,11 +228,19 @@ public class VistaPrincipalController implements Initializable {
 				String informacion = itemActual.findElement(By.xpath("./div/div[2]/div[1]/h3/a[1]"))
 						.getAttribute("title");
 				String precio = itemActual.findElement(By.xpath("./div/div[2]/div[2]/span[1]")).getText();
-				
+				if(precio.equals("Desde"))
+					precio = itemActual.findElement(By.xpath("./div/div[2]/div[2]/span[2]")).getText();
 
-				// Guardamos la informacion en la lista de cafeteras
+				//Normalizamos toda la informacion de la cafetera
+				marca = normalizarString(marca);
+				
+				System.out.println("marca  = " + marca + " \nInformacion = " + informacion + "\nPrecio = " + precio + "\n");
+				
+				//Cremaos un objeto cafetera
 				Cafetera cafetera = new Cafetera(marca, informacion, "tipo");
 				cafetera.setPrecio(Comercio.EL_CORTE_INGLES, precio);
+				
+				// Guardamos la cafetera en la lista de cafeteras
 				cafeteras.add(cafetera);
 
 			}
@@ -232,7 +248,8 @@ public class VistaPrincipalController implements Initializable {
 			/* Mientras no estas en la ultima pagina iras haciendo click en siguiente
 			  Cuando hagas el click para entrar en la ultima pagina, hara una ultima iteracion y cambia ultimaPagina a true
 			  Se hace asi para poder sacar la informacion de la ultima pagina */
-			if(siguiente.findElement(By.xpath(".//*")).getTagName().equals("span")) ultimaPagina = true;
+			if(siguiente.findElement(By.xpath(".//*")).getTagName().equals("span"))
+				ultimaPagina = true;
 			else {
 				siguiente.click();
 				siguiente = driver
@@ -245,6 +262,30 @@ public class VistaPrincipalController implements Initializable {
 		// System.out.println(elementosLi.get(1).findElement(By.xpath("./div[1]/div[1]/a/img")).click(););
 	}
 	
+	
+	/*
+	 * Normalizamos los Strings para dejar la primera letra de cada palabra en mayusculas y las demas minusculas
+	 */
+	private String normalizarString(String linea) {
+		if(!linea.equals("")) {
+			linea = linea.toLowerCase();
+			String[] palabras = linea.split(" ");
+
+			linea = "";
+
+			for(int i = 0; i < palabras.length; i++ ) {
+				palabras[i].trim(); // Quitamos posibles espacios en blanco antes y despues de la palabra
+				palabras[i] = palabras[i].substring(0, 1).toUpperCase()  //Cojo la primera letra y la pongo en mayuscula
+						+ palabras[i].substring(1); // concateno el resto de la palabra en minuscula
+				linea = linea + palabras[i] + " ";
+			}
+		}
+
+		return linea;
+	}
+	
+	
+	
 	public ArrayList<Cafetera> filtrarBusqueda(ArrayList<String> comerciosSeleccionados,
 			ArrayList<String> marcasSeleccionadas, ArrayList<String> articulosSeleccionados,
 			ArrayList<Cafetera> cafeteras) {
@@ -256,6 +297,9 @@ public class VistaPrincipalController implements Initializable {
 
 		return resultado;
 	}
+	
+	
+	/* Filtro para comercios*/
 	
 	private ArrayList<Cafetera> filtroComercios(ArrayList<Cafetera> cafeteras, ArrayList<String> comerciosSeleccionados){
 		ArrayList<Cafetera> resultado = new ArrayList<>();
@@ -274,11 +318,12 @@ public class VistaPrincipalController implements Initializable {
 	}
 	
 	
+	/* Filtro para marcas*/
 	
 	private ArrayList<Cafetera> filtroMarcas(ArrayList<Cafetera> cafeteras, ArrayList<String> marcasSeleccionadas){
 		ArrayList<Cafetera> resultado = new ArrayList<>();
 		
-		if(marcasSeleccionadas.size() != 0) { //// Si no hay marcas seleccionadas entonces nos quedamos con todas las cafeteras
+		if(marcasSeleccionadas.size() != 0) { // Si no hay marcas seleccionadas entonces nos quedamos con todas las cafeteras
 			for(Cafetera cafetera : cafeteras)  //para cada cafetera 
 				for(String marca : marcasSeleccionadas) // recorremos las marcas seleccionadas
 					if(cafetera.getMarca().equals(marca)) // preguntando si coincide con la de la cafetera
@@ -310,10 +355,12 @@ public class VistaPrincipalController implements Initializable {
 	}
 	
 	
+	
+	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		busquedaMediaMarkt();
-		//busquedaElCorteIngles();
+		//busquedaMediaMarkt();
+		busquedaElCorteIngles();
 		articulos = llenarObservableList(nombreArticulos);
 		listaArticulos.setItems(articulos);
 		marcas = llenarObservableList(marcasCafeteras);
