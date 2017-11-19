@@ -385,7 +385,9 @@ public class VistaPrincipalController implements Initializable {
 		return resultado;
 	}
 	
-	
+	private String asignarTipoCorteIngles(String tipo) {
+		if(tipo.equals("Cafetera expresso automática")) return 
+	}
 	
 	
 	@Override
