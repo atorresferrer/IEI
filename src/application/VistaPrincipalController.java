@@ -233,22 +233,16 @@ public class VistaPrincipalController implements Initializable {
 		int numElementos = elementos.size();
 
 		//Inicializamos el elemento siguiente
-		WebElement siguiente = driver
-				.findElement(By.xpath("/html/body/div[1]/div[3]/div[2]/div[1]/div[3]/ul/li[" + numElementos + "]"));
-		String windowHandler = driver.getWindowHandle();
-		
-		
-		
+		WebElement siguiente = driver.findElement(By.xpath("/html/body/div[1]/div[3]/div[2]/div[1]/div[3]/ul/li[" + numElementos + "]"));
+
 		boolean ultimaPagina = false;
 		//Mientras siguiente tenga una etiqueta "a" iran poasando las paginas
 		while (!ultimaPagina) {
 			//Esperamos a que se cargue el boton siguiente
-			//waiting.until(ExpectedConditions.visibilityOf(siguiente));
 			driver.switchTo().activeElement();
 			waiting.withTimeout(5, TimeUnit.SECONDS);
 			WebElement productList = driver.findElement(By.id("product-list"));
 			List<WebElement> elementosLi = productList.findElements(By.xpath("./ul/li"));
-			//List<WebElement> elementosLi = driver.findElements(By.xpath("/html/body/div[2]/div[3]/div[2]/div[1]/ul/li"));
 			
 			Iterator<WebElement> iter = elementosLi.iterator();
 			while (iter.hasNext()) {
@@ -264,8 +258,9 @@ public class VistaPrincipalController implements Initializable {
 
 				//Normalizamos toda la informacion de la cafetera
 				marca = normalizarString(marca);
+				String categoria = extraerCategoriaElCorteIngles(informacion, marca);
 				
-				System.out.println("marca  = " + marca + " \nInformacion = " + informacion + "\nPrecio = " + precio + "\n");
+				System.out.println("marca  = " + marca + " \nInformacion = " + categoria + "\nPrecio = " + precio + "\n");
 				
 				//Cremaos un objeto cafetera
 				Cafetera cafetera = new Cafetera(marca, informacion, "tipo");
@@ -289,17 +284,23 @@ public class VistaPrincipalController implements Initializable {
 		}
 
 		driver.quit();
-
-		// System.out.println(elementosLi.get(1).findElement(By.xpath("./div[1]/div[1]/a/img")).click(););
 	}
 	
 	
 	/*
-	 * Extracor de categorias de la informacion de El Corte Ingles
+	 * Extractor de categorias de la informacion de El Corte Ingles
 	 */
 	
-	private String extraerCategoriaElCorteIngles(String info) {
-			String categoria = info
+	private String extraerCategoriaElCorteIngles(String info, String marca) {
+			if(marca.equals("")) marca = "Bra";
+			//Lo pasamos todo a minusculas
+			String infoAux = info.toLowerCase();
+			marca = marca.toLowerCase();
+			// Sacamos el substring hasta la marca
+			String categoria = info;
+			if(infoAux.indexOf(marca) != -1)
+				categoria = info.substring(0,infoAux.indexOf(marca));
+			
 		return categoria;
 	}
 	
