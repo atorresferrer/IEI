@@ -173,14 +173,45 @@ public class VistaPrincipalController implements Initializable {
 		ChromeOptions opciones = new ChromeOptions();
 		opciones.addArguments("--start-maximized");
 		WebDriver driver = new ChromeDriver(opciones);
-		
-		driver.get("https://www.mediamarkt.es");
+		WebDriverWait waiting = new WebDriverWait(driver, 10);
+		Actions actions = new Actions(driver);
+
+		driver.get("https://www.mediamarkt.es/");
 		WebElement barraBusqueda = driver.findElement(By.id("header__search--input"));
 		barraBusqueda.click();
 		barraBusqueda.sendKeys("cafeteras\n");
-		
-		
-		
+
+		waiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//*[@id=\"eb-results-view\"]/a[1]")));
+		WebElement botonLista = driver.findElement(By.xpath("//*[@id=\"eb-results-view\"]/a[1]"));
+		botonLista.click();
+
+		ArrayList<WebElement> elementos = (ArrayList<WebElement>) driver.findElements(By.xpath("//*[@id=\"eb-results\"]/data-eb-result"));
+		int numeroElementosActual = elementos.size();
+		//Iteramos hasta que al buscar el ultimo elemento de la iteracion anterior + 1, no lo localiza y sale del bucle
+		try {
+			do {
+				actions.keyDown(Keys.CONTROL).sendKeys(Keys.END).perform(); /*scroll*/
+				String ruta = "//*[@id=\"eb-results\"]/data-eb-result["+ (numeroElementosActual + 1) + "]";
+				waiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath(ruta)));
+				numeroElementosActual = driver.findElements(By.xpath("//*[@id=\"eb-results\"]/data-eb-result")).size();
+
+			}while(true);
+			//Capturamos la excepcion de no localizar el elemento para que no aborte el programa y continuamos
+		}catch(Exception e){System.out.println(numeroElementosActual);}
+
+		elementos = (ArrayList<WebElement>) driver.findElements(By.xpath("//*[@id=\"eb-results\"]/data-eb-result"));
+		for(int i = 0; i < elementos.size(); i++) {
+			//Sacamos la informacion iterando en las cafeteras
+			String informacion = elementos.get(i).findElement(By.xpath("./div/a[2]/span[1]")).getText();
+			String marca = elementos.get(i).findElement(By.xpath("./div/a[1]/div[1]/img")).getAttribute("alt");
+			String precio = elementos.get(i).findElement(By.xpath("./div/div[2]/div/div/div")).getText();
+
+			// Guardamos la informacion en la lista de cafeteras
+			Cafetera cafetera = new Cafetera(marca, informacion, "tipo");
+			cafetera.setPrecio(Comercio.MEDIAMARKT, precio);
+			cafeteras.add(cafetera);
+		}
+
 	}
 
 	private void busquedaElCorteIngles() {
