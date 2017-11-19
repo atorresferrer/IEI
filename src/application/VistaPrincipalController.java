@@ -211,7 +211,7 @@ public class VistaPrincipalController implements Initializable {
 			cafetera.setPrecio(Comercio.MEDIAMARKT, precio);
 			cafeteras.add(cafetera);
 		}
-
+		driver.quit();
 	}
 
 	private void busquedaElCorteIngles() {
