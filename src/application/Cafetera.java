@@ -9,6 +9,14 @@ public class Cafetera {
 	private String tipo;
 	private List<Comercio> listaComercios = new ArrayList<Comercio>();
 	
+	public final static String CAFETERA_TRADICIONAL = "Cafetera Tradicional";
+	public final static String CAFETERA_DE_CAPSULAS = "Cafetera de capsulas";
+	public final static String CAFETERA_SUPERAUTOMATICA = "Cafetera Superautomatica";
+	public final static String CAFETERA_DE_GOTEO = "Cafetera de Goteo";
+	public final static String CAFETERA_EXPRESS = "Cafetera Express";
+	public final static String CAFETERA_ITALIANA_ELECTRICA = "Cafetera Italiana Electrica";
+	public final static String HERVIDORAS = "Hervidoras";
+	
 	
 	public Cafetera(String marca, String modelo, String tipo) {
 		this.marca = marca;
@@ -19,6 +27,7 @@ public class Cafetera {
 		this.listaComercios.add(new Comercio(Comercio.MEDIAMARKT));
 		this.listaComercios.add(new Comercio(Comercio.FNAC));
 	}
+	
 	public String getMarca() {
 		return marca;
 	}

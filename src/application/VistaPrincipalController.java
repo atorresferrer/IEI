@@ -295,6 +295,15 @@ public class VistaPrincipalController implements Initializable {
 	
 	
 	/*
+	 * Extracor de categorias de la informacion de El Corte Ingles
+	 */
+	
+	private String extraerCategoriaElCorteIngles(String info) {
+			String categoria = info
+		return categoria;
+	}
+	
+	/*
 	 * Normalizamos los Strings para dejar la primera letra de cada palabra en mayusculas y las demas minusculas
 	 */
 	private String normalizarString(String linea) {
