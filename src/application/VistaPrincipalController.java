@@ -15,6 +15,8 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -160,50 +162,17 @@ public class VistaPrincipalController implements Initializable {
 	}
 
 	private void busquedaMediaMarkt() {
-		String exePath = "geckodriver-master//geckodriver.exe";
-		System.setProperty("webdriver.gecko.driver", exePath);
-		DesiredCapabilities capabilities = DesiredCapabilities.firefox();
-		capabilities.setCapability("marionette", true);
-		WebDriver driver = new FirefoxDriver(capabilities);
-		WebDriverWait waiting = new WebDriverWait(driver, 5);
-		driver.get("https://www.mediamarkt.es/");
-		JavascriptExecutor jse = (JavascriptExecutor)driver;
-		driver.switchTo().activeElement();
-		jse.executeScript("window.scrollBy(0,1000)", "");
+		String exePath = "chromedriver//chromedriver.exe";
+		System.setProperty("webdriver.chrome.driver", exePath);
+		ChromeOptions opciones = new ChromeOptions();
+		opciones.addArguments("--start-maximized");
+		WebDriver driver = new ChromeDriver(opciones);
 		
-		waiting.withTimeout(5, TimeUnit.SECONDS);
+		driver.get("https://www.mediamarkt.es");
 		WebElement barraBusqueda = driver.findElement(By.id("header__search--input"));
 		barraBusqueda.click();
-		barraBusqueda.sendKeys("cafetera\n");
+		barraBusqueda.sendKeys("cafeteras\n");
 		
-		waiting.until(ExpectedConditions.presenceOfElementLocated(By.className("eb-list")));
-		driver.findElement(By.className("eb-list")).click();
-		driver.switchTo().activeElement();
-		waiting.until(ExpectedConditions.elementToBeSelected(By.xpath("/html/body/div[6]/main/div/section/data-eb-results/data-eb-result[1]/div/a[1]/div[2]")));
-		/*JavascriptExecutor jse = (JavascriptExecutor)driver;
-		driver.switchTo().activeElement();
-		jse.executeScript("window.scrollBy(0,1000)", "");*/
-		/*for(int i = 0; i<50; i++) {
-			JavascriptExecutor jse = (JavascriptExecutor)driver;
-			driver.switchTo().activeElement();
-			jse.executeScript("window.scrollBy(0,100)", "");
-			Actions actions = new Actions(driver);
-			actions.sendKeys(Keys.SPACE).perform();
-			driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);*/
-		
-
-		/*driver.findElement(By.id("world_hogar-jardin")).click();
-		//driver.switchTo().activeElement();
-		WebElement cafeTe = driver.findElement(By.id("category_hogar-jardin--ctg-cafe"));
-		waiting.until(ExpectedConditions.visibilityOf(cafeTe));
-		cafeTe.findElement(By.xpath("./a/span")).click();
-		waiting.withTimeout(5, TimeUnit.SECONDS);
-		WebElement contenedorCategorias = driver.findElement(By.id("containerLeft"));
-		waiting.withTimeout(5, TimeUnit.SECONDS);
-		List<WebElement> categorias = contenedorCategorias.findElements(By.cssSelector("*[class^='categoriesTreeContainer'"));
-		for(WebElement tipo : categorias) {
-			tipo.click();
-		}*/
 		
 		
 	}
