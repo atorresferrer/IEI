@@ -12,6 +12,7 @@ import java.util.concurrent.TimeUnit;
 import org.openqa.selenium.By;
 import org.openqa.selenium.By.ByXPath;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -166,8 +167,32 @@ public class VistaPrincipalController implements Initializable {
 		WebDriver driver = new FirefoxDriver(capabilities);
 		WebDriverWait waiting = new WebDriverWait(driver, 5);
 		driver.get("https://www.mediamarkt.es/");
+		JavascriptExecutor jse = (JavascriptExecutor)driver;
+		driver.switchTo().activeElement();
+		jse.executeScript("window.scrollBy(0,1000)", "");
+		
+		waiting.withTimeout(5, TimeUnit.SECONDS);
+		WebElement barraBusqueda = driver.findElement(By.id("header__search--input"));
+		barraBusqueda.click();
+		barraBusqueda.sendKeys("cafetera\n");
+		
+		waiting.until(ExpectedConditions.presenceOfElementLocated(By.className("eb-list")));
+		driver.findElement(By.className("eb-list")).click();
+		driver.switchTo().activeElement();
+		waiting.until(ExpectedConditions.elementToBeSelected(By.xpath("/html/body/div[6]/main/div/section/data-eb-results/data-eb-result[1]/div/a[1]/div[2]")));
+		/*JavascriptExecutor jse = (JavascriptExecutor)driver;
+		driver.switchTo().activeElement();
+		jse.executeScript("window.scrollBy(0,1000)", "");*/
+		/*for(int i = 0; i<50; i++) {
+			JavascriptExecutor jse = (JavascriptExecutor)driver;
+			driver.switchTo().activeElement();
+			jse.executeScript("window.scrollBy(0,100)", "");
+			Actions actions = new Actions(driver);
+			actions.sendKeys(Keys.SPACE).perform();
+			driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);*/
+		
 
-		driver.findElement(By.id("world_hogar-jardin")).click();
+		/*driver.findElement(By.id("world_hogar-jardin")).click();
 		//driver.switchTo().activeElement();
 		WebElement cafeTe = driver.findElement(By.id("category_hogar-jardin--ctg-cafe"));
 		waiting.until(ExpectedConditions.visibilityOf(cafeTe));
@@ -176,7 +201,9 @@ public class VistaPrincipalController implements Initializable {
 		WebElement contenedorCategorias = driver.findElement(By.id("containerLeft"));
 		waiting.withTimeout(5, TimeUnit.SECONDS);
 		List<WebElement> categorias = contenedorCategorias.findElements(By.cssSelector("*[class^='categoriesTreeContainer'"));
-		System.out.println(categorias.size());
+		for(WebElement tipo : categorias) {
+			tipo.click();
+		}*/
 		
 		
 	}
