@@ -154,9 +154,7 @@ public class VistaPrincipalController implements Initializable {
 		for (int i = 0; i < listaStrings.length; i++) {
 			lista.add(new CheckBox(listaStrings[i]));
 		}
-
 		return lista;
-
 	}
 
 	private void busquedaMediaMarkt() {
@@ -323,6 +321,9 @@ public class VistaPrincipalController implements Initializable {
 		return resultado;
 	}
 	
+	
+	
+	/* Filtro para articulos*/
 	
 	private ArrayList<Cafetera> filtroArticulos(ArrayList<Cafetera> cafeteras, ArrayList<String> articulosSeleccionados){
 		ArrayList<Cafetera> resultado = new ArrayList<>();
