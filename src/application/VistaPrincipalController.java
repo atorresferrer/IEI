@@ -395,7 +395,16 @@ public class VistaPrincipalController implements Initializable {
 	}
 	
 	private String asignarTipoCorteIngles(String tipo) {
-		if(tipo.equals("Cafetera expresso automática")) return 
+		if(tipo.contains("super")) return Cafetera.CAFETERA_SUPERAUTOMATICA;
+		else if(tipo.contains("goteo")) return Cafetera.CAFETERA_DE_GOTEO;
+		else if(tipo.contains("italiana eléctrica")) return Cafetera.CAFETERA_ITALIANA_ELECTRICA;
+		else if(tipo.contains("moka")) return Cafetera.CAFETERA_ITALIANA_ELECTRICA;
+		else if(tipo.contains("cápsulas")) return Cafetera.CAFETERA_DE_CAPSULAS;
+		else if(tipo.contains("espresso automática")) return Cafetera.CAFETERA_ESPRESSO_AUTOMATICA;
+		else if(tipo.contains("espresso manual")) return Cafetera.CAFETERA_EXPRESS;
+		else if(tipo.contains("émbolo")) return Cafetera.CAFETERA_EMBOLO;
+		else if(tipo.contains("Máquina de café")) return Cafetera.MAQUINA_CAFE;
+		else return "SIN CATEGORIA";	
 	}
 	
 	
