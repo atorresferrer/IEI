@@ -1,9 +1,17 @@
 package application;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
 import java.util.ResourceBundle;
 
+import javafx.beans.InvalidationListener;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -38,7 +46,8 @@ public class VistaResultadoController implements Initializable {
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		//Recuperamos la informacion de las cafeteras a mostrar
-		listaCafeteras = VistaPrincipalController.getCafeteras();
+		listaCafeteras = FXCollections.observableArrayList();
+		inicializarListaCafeteras(VistaPrincipalController.getCafeteras());
 
 		//Asignamos los valores a las columnas del tableView
 		colMarca.setCellValueFactory(e -> new SimpleStringProperty(e.getValue().getMarca()));
@@ -50,5 +59,10 @@ public class VistaResultadoController implements Initializable {
 
 		//Inicializamos el tableView
 		tableViewResultado.setItems(listaCafeteras);
+	}
+	
+	private void inicializarListaCafeteras (ArrayList<Cafetera> cafeteras) {
+		for(Cafetera cafetera : cafeteras)
+			listaCafeteras.add(cafetera);
 	}
 }
