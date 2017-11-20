@@ -6,9 +6,12 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.By.ByXPath;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -17,8 +20,11 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.support.events.EventFiringWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+
+import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -69,7 +75,6 @@ public class VistaPrincipalController implements Initializable {
 	private ArrayList<String> comerciosSeleccionados = new ArrayList<>();
 	
 	//Almacenamiento de todas as cafeteras
-	private static ArrayList<Cafetera> cafeterasFiltradas = new ArrayList<>();
 	private ArrayList<Cafetera> cafeteras = new ArrayList<>();
 	
 	
@@ -97,7 +102,6 @@ public class VistaPrincipalController implements Initializable {
 
 			alert.showAndWait();
 		} else {
-			cafeterasFiltradas = filtrarBusqueda(comerciosSeleccionados, marcasSeleccionadas, articulosSeleccionados, cafeteras);
 			abrirResultado();
 		}
 
@@ -108,8 +112,7 @@ public class VistaPrincipalController implements Initializable {
 	 * Devuelve las cafeteras para poder recuperarlas desde la ventana de resultados,
 	 * lo hacemos estatico para no tener que crear una instancia de VistaPrincipalController
 	 */
-	
-	public static ArrayList <Cafetera> getCafeterasFiltradas() { return cafeterasFiltradas; }
+	public static ArrayList <Cafetera> getCafeteras() { return cafeteras; }
 	
 	private boolean comprobarSiExiste(String marca) {
 		boolean existe = false;
@@ -125,7 +128,7 @@ public class VistaPrincipalController implements Initializable {
 			if(!comprobarSiExiste(cafetera.getMarca()))
 				marcasCafeteras.add(cafetera.getMarca());
 	}
-	
+	 
 
 	private void abrirResultado() {
 		try {
@@ -170,9 +173,7 @@ public class VistaPrincipalController implements Initializable {
 	private ObservableList<CheckBox> llenarObservableList(ArrayList<String> listaStrings) {
 		ObservableList<CheckBox> lista = FXCollections.observableArrayList();
 
-			lista.add(new CheckBox(listaStrings[i]));
-		}
-		return lista;
+		
 	}
 
 	private void busquedaMediaMarkt() {
