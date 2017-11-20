@@ -84,13 +84,9 @@ public class VistaPrincipalController implements Initializable {
 	/*private String[] nombreArticulos = new String[] { "Cafeteras de capsulas", "Cafeteras de goteo",
 			"Cafeteras expresso manual", "Cafeteras italianas", "Cafeteras de capsulas", "Cafeteras super automaticas",
 			"Cafetera expres", "Cafetera sin categoria" };*/
-	private String[] nombreArticulos = Cafetera.getTiposDeCafeteras();
+	private ArrayList<String> nombreArticulos = Cafetera.getTiposDeCafeteras();
 
-	private String[] marcasCafeteras = new String[] { "Bosch", "Breville", "De Longhi", "Digrato", "Electrolux", "Illy",
-			"Jata", "Jura", "Kenwood", "Krups", "Lavazza", "Marcilla", "Menz & Konecke", "Miele", "Moulinex",
-			"Nescafe Dolce Gusto", "OK", "Orbegozo", "Oster", "Philips", "Russell Hobbs", "Saeco", "Saivod", "Scanpart",
-			"Severin", "Smeg", "Solac", "Tassimo", "Taurus", "Tecnhogar", "Tecnnhogar", "Tristar", "Ufesa", "Whirlpool",
-			"Wmf" };
+	private ArrayList<String> marcasCafeteras = new ArrayList<>();
 
 	@FXML
 	void buscar(ActionEvent event) {
@@ -117,6 +113,21 @@ public class VistaPrincipalController implements Initializable {
 	 * lo hacemos estatico para no tener que crear una instancia de VistaPrincipalController
 	 */
 	public static ArrayList <Cafetera> getCafeteras() { return cafeteras; }
+	
+	private boolean comprobarSiExiste(String marca) {
+		boolean existe = false;
+		for(Cafetera cafetera : cafeteras)
+			if(marca.equals(cafetera.getMarca())){
+				existe = true; break;
+			}
+		return existe;
+	}
+	
+	private void cargarMarcasCafeteras() {
+		for(Cafetera cafetera : cafeteras) 
+			if(!comprobarSiExiste(cafetera.getMarca()))
+				marcasCafeteras.add(cafetera.getMarca());
+	}
 	 
 
 	private void abrirResultado() {
@@ -159,11 +170,11 @@ public class VistaPrincipalController implements Initializable {
 		return seleccion;
 	}
 
-	private ObservableList<CheckBox> llenarObservableList(String[] listaStrings) {
+	private ObservableList<CheckBox> llenarObservableList(ArrayList<String> listaStrings) {
 		ObservableList<CheckBox> lista = FXCollections.observableArrayList();
 
-		for (int i = 0; i < listaStrings.length; i++) {
-			lista.add(new CheckBox(listaStrings[i]));
+		for (int i = 0; i < listaStrings.size(); i++) {
+			lista.add(new CheckBox(listaStrings.get(i)));
 		}
 		return lista;
 	}
@@ -415,6 +426,7 @@ public class VistaPrincipalController implements Initializable {
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		//busquedaMediaMarkt();
 		busquedaElCorteIngles();
+		cargarMarcasCafeteras();
 		articulos = llenarObservableList(nombreArticulos);
 		listaArticulos.setItems(articulos);
 		marcas = llenarObservableList(marcasCafeteras);
