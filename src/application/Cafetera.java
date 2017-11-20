@@ -1,6 +1,7 @@
 package application;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Cafetera {
@@ -84,10 +85,10 @@ public class Cafetera {
 		return precio;
 	}
 	
-	public static String[] getTiposDeCafeteras() {
-		String[] tiposDeCafeteras = new String[] { CAFETERA_DE_CAPSULAS, CAFETERA_DE_GOTEO, CAFETERA_EMBOLO,
+	public static ArrayList<String> getTiposDeCafeteras() {
+		ArrayList<String> tiposDeCafeteras = new ArrayList<String>(Arrays.asList(CAFETERA_DE_CAPSULAS, CAFETERA_DE_GOTEO, CAFETERA_EMBOLO,
 				CAFETERA_ESPRESSO_AUTOMATICA, CAFETERA_EXPRESS, CAFETERA_ITALIANA_ELECTRICA, CAFETERA_SUPERAUTOMATICA,
-				CAFETERA_TRADICIONAL, MAQUINA_CAFE };
+				CAFETERA_TRADICIONAL, MAQUINA_CAFE ));
 		return tiposDeCafeteras;
 	}
 }
