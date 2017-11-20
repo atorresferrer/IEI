@@ -4,13 +4,14 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="800.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.VistaResultadoController">
+<AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="800.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.VistaResultadoController">
    <children>
-      <TableView fx:id="tableViewResultado" prefHeight="800.0" prefWidth="1000.0">
+      <TableView fx:id="tableViewResultado" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="800.0" prefWidth="1000.0">
         <columns>
           <TableColumn fx:id="colMarca" prefWidth="150.0" text="Marca" />
-          <TableColumn fx:id="colModelo" minWidth="0.0" prefWidth="250.0" text="Modelo" />
-            <TableColumn fx:id="colAmazon" minWidth="0.0" prefWidth="150.0" text="Amazon" />
+          <TableColumn fx:id="colModelo" minWidth="0.0" prefWidth="143.0" text="Modelo" />
+            <TableColumn fx:id="colTipo" prefWidth="234.0" text="Articulo" />
+            <TableColumn fx:id="colAmazon" minWidth="0.0" prefWidth="98.0" text="Amazon" />
             <TableColumn fx:id="colCorteIngles" prefWidth="150.0" text="El Corte Inglés" />
             <TableColumn fx:id="colMediaMarkt" prefWidth="150.0" text="Media Markt" />
             <TableColumn fx:id="colFnac" prefWidth="150.0" text="Fnac" />

@@ -76,6 +76,7 @@ public class VistaPrincipalController implements Initializable {
 	
 	//Almacenamiento de todas as cafeteras
 	private ArrayList<Cafetera> cafeteras = new ArrayList<>();
+	private static ArrayList<Cafetera> cafeterasFiltradas = new ArrayList<>();
 	
 	
 	
@@ -88,6 +89,10 @@ public class VistaPrincipalController implements Initializable {
 
 	private ArrayList<String> marcasCafeteras = new ArrayList<>();
 
+	
+	/*
+	 * Cuando pinchemos en el boton...
+	 */
 	@FXML
 	void buscar(ActionEvent event) {
 		articulosSeleccionados = obtenerSeleccion(articulos);
@@ -102,6 +107,7 @@ public class VistaPrincipalController implements Initializable {
 
 			alert.showAndWait();
 		} else {
+			cafeterasFiltradas = filtrarBusqueda(comerciosSeleccionados, marcasSeleccionadas, articulosSeleccionados, cafeteras);
 			abrirResultado();
 		}
 
@@ -112,12 +118,12 @@ public class VistaPrincipalController implements Initializable {
 	 * Devuelve las cafeteras para poder recuperarlas desde la ventana de resultados,
 	 * lo hacemos estatico para no tener que crear una instancia de VistaPrincipalController
 	 */
-	public static ArrayList <Cafetera> getCafeteras() { return cafeteras; }
+	public static ArrayList <Cafetera> getCafeterasFiltradas() { return cafeterasFiltradas ; }
 	
 	private boolean comprobarSiExiste(String marca) {
 		boolean existe = false;
-		for(Cafetera cafetera : cafeteras)
-			if(marca.equals(cafetera.getMarca())){
+		for(String cafetera : marcasCafeteras)
+			if(marca.equals(cafetera)){
 				existe = true; break;
 			}
 		return existe;
@@ -219,8 +225,16 @@ public class VistaPrincipalController implements Initializable {
 			String marca = elementos.get(i).findElement(By.xpath("./div/a[1]/div[1]/img")).getAttribute("alt");
 			String precio = elementos.get(i).findElement(By.xpath("./div/div[2]/div/div/div")).getText();
 
+			
+			//Normalizamos toda la informacion de la cafetera
+			marca = normalizarString(marca);
+			String tipo = asignarTipoMediaMarkt((extraerCategoriaMediaMarkt(informacion)));
+			String modelo = extraerModeloMediaMarkt(informacion, marca);
+			System.out.println("marca  = " + marca + " \nTipo = " + tipo + " \nModelo = " + modelo + "\nPrecio = " + precio + "\n");
+			
+			
 			// Guardamos la informacion en la lista de cafeteras
-			Cafetera cafetera = new Cafetera(marca, informacion, "tipo");
+			Cafetera cafetera = new Cafetera(marca, modelo, tipo);
 			cafetera.setPrecio(Comercio.MEDIAMARKT, precio);
 			cafeteras.add(cafetera);
 		}
@@ -272,10 +286,13 @@ public class VistaPrincipalController implements Initializable {
 				//Normalizamos toda la informacion de la cafetera
 				marca = normalizarString(marca);
 				String tipo = asignarTipoCorteIngles(extraerCategoriaElCorteIngles(informacion, marca));
-				System.out.println("marca  = " + marca + " \nInformacion = " + tipo + "\nPrecio = " + precio + "\n");
+				String modelo = extraerModeloElCorteIngles(informacion, marca);
+				System.out.println("marca  = " + marca + " \nTipo = " + tipo + " \nModelo = " + modelo + "\nPrecio = " + precio + "\n");
+				
+				
 				
 				//Cremaos un objeto cafetera
-				Cafetera cafetera = new Cafetera(marca, informacion, tipo);
+				Cafetera cafetera = new Cafetera(marca, modelo, tipo);
 				cafetera.setPrecio(Comercio.EL_CORTE_INGLES, precio);
 				
 				// Guardamos la cafetera en la lista de cafeteras
@@ -317,7 +334,59 @@ public class VistaPrincipalController implements Initializable {
 	}
 	
 	/*
+	 * Extractor de categorias de la informacion de El Corte Ingles
+	 */
+	
+	private String extraerModeloElCorteIngles(String info, String marca) {
+			if(marca.equals("")) marca = "Bra";
+			//Lo pasamos todo a minusculas
+			String infoAux = info.toLowerCase();
+			marca = marca.toLowerCase();
+			// Sacamos el substring hasta la marca
+			String modelo = info;
+			if(infoAux.indexOf(marca) != -1)
+				modelo = info.substring(infoAux.indexOf(marca) + marca.length());
+			
+		return modelo;
+	}
+	
+	
+	
+	/*
+	 * Extractor de categorias de la informacion de Media Markt
+	 */
+	
+	private String extraerCategoriaMediaMarkt(String info) {
+			String separador = "-";
+			String categoria = info;
+			
+			// Sacamos el substring hasta el guion, si no tiene devolvemos toda la informacion
+			if(info.indexOf(separador) != -1)
+				categoria = info.substring(0,info.indexOf(separador));
+			
+		return categoria;
+	}
+	
+	/*
+	 * Extractor de categorias de la informacion de Mediamarkt
+	 */
+	
+	private String extraerModeloMediaMarkt(String info, String marca) {
+			if(marca.equals("")) marca = "Sin Marca";
+			//Lo pasamos todo a minusculas
+			String infoAux = info.toLowerCase();
+			marca = marca.toLowerCase();
+			// Sacamos el substring hasta la marca
+			String modelo = info;
+			if(infoAux.indexOf(marca) != -1)
+				modelo = info.substring(infoAux.indexOf(marca) + marca.length());
+			
+		return modelo;
+	}
+	
+	/*
 	 * Normalizamos los Strings para dejar la primera letra de cada palabra en mayusculas y las demas minusculas
+	 * 
 	 */
 	private String normalizarString(String linea) {
 		if(!linea.equals("")) {
@@ -342,13 +411,12 @@ public class VistaPrincipalController implements Initializable {
 	public ArrayList<Cafetera> filtrarBusqueda(ArrayList<String> comerciosSeleccionados,
 			ArrayList<String> marcasSeleccionadas, ArrayList<String> articulosSeleccionados,
 			ArrayList<Cafetera> cafeteras) {
-		ArrayList<Cafetera> resultado = new ArrayList<>();
 
 		cafeteras = filtroComercios(cafeteras, comerciosSeleccionados);
 		cafeteras = filtroMarcas(cafeteras, marcasSeleccionadas);
-		cafeteras = filtroArticulos(cafeteras, marcasSeleccionadas);
+		cafeteras = filtroArticulos(cafeteras, articulosSeleccionados);
 
-		return resultado;
+		return cafeteras;
 	}
 	
 	
@@ -413,7 +481,7 @@ public class VistaPrincipalController implements Initializable {
 		else if(tipo.contains("italiana eléctrica")) return Cafetera.CAFETERA_ITALIANA_ELECTRICA;
 		else if(tipo.contains("moka")) return Cafetera.CAFETERA_ITALIANA_ELECTRICA;
 		else if(tipo.contains("cápsulas")) return Cafetera.CAFETERA_DE_CAPSULAS;
-		else if(tipo.contains("espresso automática")) return Cafetera.CAFETERA_ESPRESSO_AUTOMATICA;
+		else if(tipo.contains("espresso automática")) return Cafetera.CAFETERA_DE_CAPSULAS;
 		else if(tipo.contains("espresso manual")) return Cafetera.CAFETERA_EXPRESS;
 		else if(tipo.contains("émbolo")) return Cafetera.CAFETERA_EMBOLO;
 		else if(tipo.contains("Máquina de café")) return Cafetera.MAQUINA_CAFE;
@@ -422,10 +490,22 @@ public class VistaPrincipalController implements Initializable {
 		else return "SIN CATEGORIA";	
 	}
 	
+	private String asignarTipoMediaMarkt(String tipo) {
+		tipo = normalizarString(tipo);
+		if(tipo.contains("Superautomática")) return Cafetera.CAFETERA_SUPERAUTOMATICA;
+		else if(tipo.contains("Express")) return Cafetera.CAFETERA_EXPRESS;
+		else if(tipo.contains("Exprés")) return Cafetera.CAFETERA_EXPRESS;
+		else if(tipo.contains("Goteo")) return Cafetera.CAFETERA_DE_GOTEO;
+		else if(tipo.contains("Tradicional")) return Cafetera.CAFETERA_TRADICIONAL;
+		else if(tipo.contains("Cápsulas")) return Cafetera.CAFETERA_DE_CAPSULAS;
+		else if(tipo.startsWith("Cafetera")) return Cafetera.CAFETERA_DE_CAPSULAS;
+		else return "SIN CATEGORIA";
+	}
+	
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		//busquedaMediaMarkt();
+		busquedaMediaMarkt();
 		busquedaElCorteIngles();
 		cargarMarcasCafeteras();
 		articulos = llenarObservableList(nombreArticulos);

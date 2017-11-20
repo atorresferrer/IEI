@@ -28,6 +28,9 @@ public class VistaResultadoController implements Initializable {
 
 	@FXML
 	private TableColumn<Cafetera, String> colModelo;
+	
+	 @FXML
+	 private TableColumn<Cafetera, String> colTipo;
 
 	@FXML
 	private TableColumn<Cafetera, String> colAmazon;
@@ -52,6 +55,7 @@ public class VistaResultadoController implements Initializable {
 		//Asignamos los valores a las columnas del tableView
 		colMarca.setCellValueFactory(e -> new SimpleStringProperty(e.getValue().getMarca()));
 		colModelo.setCellValueFactory(e -> new SimpleStringProperty(e.getValue().getModelo()));
+		colTipo.setCellValueFactory(e -> new SimpleStringProperty(e.getValue().getTipo()));
 		colAmazon.setCellValueFactory(e -> new SimpleStringProperty(e.getValue().getPrecio(Comercio.AMAZON)));
 		colCorteIngles.setCellValueFactory(e -> new SimpleStringProperty(e.getValue().getPrecio(Comercio.EL_CORTE_INGLES)));
 		colMediaMarkt.setCellValueFactory(e -> new SimpleStringProperty(e.getValue().getPrecio(Comercio.MEDIAMARKT)));
