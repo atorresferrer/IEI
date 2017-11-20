@@ -16,7 +16,7 @@ public class Cafetera {
 	public final static String CAFETERA_EXPRESS = "Cafetera Express";
 	public final static String CAFETERA_ESPRESSO_AUTOMATICA = "Cafetera Espresso Automática";
 	public final static String CAFETERA_ITALIANA_ELECTRICA = "Cafetera Italiana Electrica";
-	//public final static String HERVIDORAS = "Hervidoras";
+	public final static String OTRAS = "Otras cafeteras";
 	public final static String CAFETERA_EMBOLO = "Cafetera de émbolo";
 	public final static String MAQUINA_CAFE = "Máquina de café";
 	
