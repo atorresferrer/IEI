@@ -174,6 +174,10 @@ public class VistaPrincipalController implements Initializable {
 		ObservableList<CheckBox> lista = FXCollections.observableArrayList();
 
 		
+		for(String elemento : listaStrings)
+			lista.add(new CheckBox(elemento));
+		
+		return lista;
 	}
 
 	private void busquedaMediaMarkt() {
