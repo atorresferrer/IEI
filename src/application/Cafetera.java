@@ -25,6 +25,7 @@ public class Cafetera {
 	public Cafetera(String marca, String modelo, String tipo) {
 		this.marca = marca;
 		this.modelo = modelo;
+		limpiarModelo();
 		this.tipo = tipo;
 		this.listaComercios.add(new Comercio(Comercio.AMAZON));
 		this.listaComercios.add(new Comercio(Comercio.EL_CORTE_INGLES));
@@ -90,5 +91,16 @@ public class Cafetera {
 				CAFETERA_EXPRESS, CAFETERA_ITALIANA_ELECTRICA, CAFETERA_SUPERAUTOMATICA,
 				CAFETERA_TRADICIONAL, MAQUINA_CAFE, OTRAS));
 		return tiposDeCafeteras;
+	}
+	
+	private void limpiarModelo() {
+		ArrayList<String> palabrasClave = new ArrayList<>(Arrays.asList("para", "con",",",
+				"Presión","15 bares","19 bares","CPotencia","Potencia", "Capacidad", "Hasta","Cuerpo", "Presion"));
+		int posPalabraClave = 0;
+		for(String palabraClave : palabrasClave) {
+			posPalabraClave = modelo.toLowerCase().indexOf(palabraClave.toLowerCase());
+			if(posPalabraClave != -1)
+				modelo = modelo.substring(0, posPalabraClave);
+		}
 	}
 }

@@ -71,18 +71,23 @@ public class VistaPrincipalController implements Initializable {
 	//Almacenamiento de todas as cafeteras
 	private ArrayList<Cafetera> cafeteras = new ArrayList<>();
 	private static ArrayList<Cafetera> cafeterasFiltradas = new ArrayList<>();
-	
-	
-	
-	//private final String TEXTO_BUSQUEDA = "Cafetera";
 
-	/*private String[] nombreArticulos = new String[] { "Cafeteras de capsulas", "Cafeteras de goteo",
-			"Cafeteras expresso manual", "Cafeteras italianas", "Cafeteras de capsulas", "Cafeteras super automaticas",
-			"Cafetera expres", "Cafetera sin categoria" };*/
 	private ArrayList<String> nombreArticulos = Cafetera.getTiposDeCafeteras();
 
 	private ArrayList<String> marcasCafeteras = new ArrayList<>();
 
+	
+	@Override
+	public void initialize(URL arg0, ResourceBundle arg1) {
+		busquedaMediaMarkt();
+		busquedaElCorteIngles();
+		cargarMarcasCafeteras();
+		articulos = llenarObservableList(nombreArticulos);
+		listaArticulos.setItems(articulos);
+		marcas = llenarObservableList(marcasCafeteras);
+		listaMarcas.setItems(marcas);
+
+	}
 	
 	/*
 	 * Cuando pinchemos en el boton...
@@ -112,30 +117,12 @@ public class VistaPrincipalController implements Initializable {
 	 * Devuelve las cafeteras para poder recuperarlas desde la ventana de resultados,
 	 * lo hacemos estatico para no tener que crear una instancia de VistaPrincipalController
 	 */
-	public static ArrayList <Cafetera> getCafeterasFiltradas() { return cafeterasFiltradas ; }
-	
-	private boolean comprobarSiExiste(String marca) {
-		boolean existe = false;
-		for(String cafetera : marcasCafeteras)
-			if(marca.equals(cafetera)){
-				existe = true; break;
-			}
-		return existe;
-	}
-	
-	private void cargarMarcasCafeteras() {
-		for(Cafetera cafetera : cafeteras) 
-			if(!comprobarSiExiste(cafetera.getMarca()))
-				marcasCafeteras.add(cafetera.getMarca());
-	}
-	 
+	public static ArrayList <Cafetera> getCafeterasFiltradas() { return cafeterasFiltradas ; } 
 
 	private void abrirResultado() {
 		try {
 			FXMLLoader miCargador = new FXMLLoader(getClass().getResource("/application/VistaResultado.fxml"));
 			AnchorPane root = (AnchorPane) miCargador.load();
-			//VistaResultadoController conf = miCargador.<VistaResultadoController>getController();
-			// conf.iniciar();
 			Scene scene = new Scene(root, 1000, 800);
 			Stage stage = new Stage();
 			stage.setScene(scene);
@@ -179,6 +166,13 @@ public class VistaPrincipalController implements Initializable {
 		
 		return lista;
 	}
+	
+	/*
+	 * ***************************************************************************************
+	 *                     WRAPER MEDIA MARKT
+	 * ***************************************************************************************
+	 * 
+	 */
 
 	private void busquedaMediaMarkt() {
 		String exePath = "chromedriver//chromedriver.exe";
@@ -234,7 +228,71 @@ public class VistaPrincipalController implements Initializable {
 		}
 		driver.quit();
 	}
+	
+	
+	/*
+	 * Extractor de categorias de la informacion de Media Markt
+	 */
+	
+	private String extraerCategoriaMediaMarkt(String info) {
+			String separador = "-";
+			String categoria = info;
+			
+			// Sacamos el substring hasta el guion, si no tiene devolvemos toda la informacion
+			if(info.indexOf(separador) != -1)
+				categoria = info.substring(0,info.indexOf(separador));
+			
+		return categoria;
+	}
+	
+	/*
+	 * Extractor de categorias de la informacion de Mediamarkt
+	 */
+	
+	private String extraerModeloMediaMarkt(String info, String marca) {
+			if(marca.equals("")) marca = "Sin Marca";
+			//Lo pasamos todo a minusculas
+			String infoAux = info.toLowerCase();
+			marca = marca.toLowerCase();
+			// Sacamos el substring hasta la marca
+			String modelo = info;
+			//Caso especifico
+			if(marca.equals("Menz & Konecke"))
+				marca = "Menz and Konecke";
+			if(infoAux.indexOf(marca) != -1)
+				modelo = info.substring(infoAux.indexOf(marca) + marca.length());
+			
+		return modelo;
+	}
+	
+	
+	/*
+	 * Asignar el tipo especifico de la marca a un tipo de cafetera unificado
+	 */
+	
+	private String asignarTipoMediaMarkt(String tipo) {
+		tipo = normalizarString(tipo);
+		if(tipo.contains("Superautomática")) return Cafetera.CAFETERA_SUPERAUTOMATICA;
+		else if(tipo.contains("Express")) return Cafetera.CAFETERA_EXPRESS;
+		else if(tipo.contains("Exprés")) return Cafetera.CAFETERA_EXPRESS;
+		else if(tipo.contains("Goteo")) return Cafetera.CAFETERA_DE_GOTEO;
+		else if(tipo.contains("Tradicional")) return Cafetera.CAFETERA_TRADICIONAL;
+		else if(tipo.contains("Cápsulas")) return Cafetera.CAFETERA_DE_CAPSULAS;
+		else if(tipo.startsWith("Cafetera")) return Cafetera.CAFETERA_DE_CAPSULAS;
+		else return "SIN CATEGORIA";
+	}
+	
+	
+	
 
+	/*
+	 * ***************************************************************************************
+	 *                     WRAPER EL CORTE INGLES 
+	 * ***************************************************************************************
+	 * 
+	 */
+	
+	
 	private void busquedaElCorteIngles() {
 
 		String exePath = "geckodriver-master//geckodriver.exe";
@@ -279,11 +337,13 @@ public class VistaPrincipalController implements Initializable {
 
 				//Normalizamos toda la informacion de la cafetera
 				marca = normalizarString(marca);
+				
+				//Caso especifico
+				if(marca.toLowerCase().equals("de'longhi"))
+					marca = "De Longhi";
+				
 				String tipo = asignarTipoCorteIngles(extraerCategoriaElCorteIngles(informacion, marca));
 				String modelo = extraerModeloElCorteIngles(informacion, marca);
-				System.out.println("marca  = " + marca + " \nTipo = " + tipo + " \nModelo = " + modelo + "\nPrecio = " + precio + "\n");
-				
-				
 				
 				//Cremaos un objeto cafetera
 				Cafetera cafetera = new Cafetera(marca, modelo, tipo);
@@ -291,10 +351,9 @@ public class VistaPrincipalController implements Initializable {
 				
 				// Guardamos la cafetera en la lista de cafeteras
 				cafeteras.add(cafetera);
-
 			}
 			
-			/* Mientras no estas en la ultima pagina iras haciendo click en siguiente
+			/* Mientras no estas en la ultima pagina iras haciendo click en siguiente.
 			  Cuando hagas el click para entrar en la ultima pagina, hara una ultima iteracion y cambia ultimaPagina a true
 			  Se hace asi para poder sacar la informacion de la ultima pagina */
 			if(siguiente.findElement(By.xpath(".//*")).getTagName().equals("span"))
@@ -344,39 +403,25 @@ public class VistaPrincipalController implements Initializable {
 		return modelo;
 	}
 	
-	
-	
 	/*
-	 * Extractor de categorias de la informacion de Media Markt
+	 * Asignar el tipo especifico de la marca a un tipo de cafetera unificado
 	 */
 	
-	private String extraerCategoriaMediaMarkt(String info) {
-			String separador = "-";
-			String categoria = info;
-			
-			// Sacamos el substring hasta el guion, si no tiene devolvemos toda la informacion
-			if(info.indexOf(separador) != -1)
-				categoria = info.substring(0,info.indexOf(separador));
-			
-		return categoria;
+	private String asignarTipoCorteIngles(String tipo) {
+		if(tipo.contains("super")) return Cafetera.CAFETERA_SUPERAUTOMATICA;
+		else if(tipo.contains("goteo")) return Cafetera.CAFETERA_DE_GOTEO;
+		else if(tipo.contains("italiana eléctrica")) return Cafetera.CAFETERA_ITALIANA_ELECTRICA;
+		else if(tipo.contains("moka")) return Cafetera.CAFETERA_ITALIANA_ELECTRICA;
+		else if(tipo.contains("cápsulas")) return Cafetera.CAFETERA_DE_CAPSULAS;
+		else if(tipo.contains("espresso automática")) return Cafetera.CAFETERA_DE_CAPSULAS;
+		else if(tipo.contains("espresso manual")) return Cafetera.CAFETERA_EXPRESS;
+		else if(tipo.contains("émbolo")) return Cafetera.CAFETERA_EMBOLO;
+		else if(tipo.contains("Máquina de café")) return Cafetera.MAQUINA_CAFE;
+		else if(tipo.contains("italiana")) return Cafetera.CAFETERA_TRADICIONAL;
+		else if(tipo.startsWith("Cafetera")) return Cafetera.OTRAS;
+		else return "SIN CATEGORIA";	
 	}
 	
-	/*
-	 * Extractor de categorias de la informacion de Mediamarkt
-	 */
-	
-	private String extraerModeloMediaMarkt(String info, String marca) {
-			if(marca.equals("")) marca = "Sin Marca";
-			//Lo pasamos todo a minusculas
-			String infoAux = info.toLowerCase();
-			marca = marca.toLowerCase();
-			// Sacamos el substring hasta la marca
-			String modelo = info;
-			if(infoAux.indexOf(marca) != -1)
-				modelo = info.substring(infoAux.indexOf(marca) + marca.length());
-			
-		return modelo;
-	}
 	
 	/*
 	 * Normalizamos los Strings para dejar la primera letra de cada palabra en mayusculas y las demas minusculas
@@ -401,6 +446,9 @@ public class VistaPrincipalController implements Initializable {
 	}
 	
 	
+	/*
+	 * Filtra la busqueda en funcion de los filtros seleccionados en la ventana principal
+	 */
 	
 	public ArrayList<Cafetera> filtrarBusqueda(ArrayList<String> comerciosSeleccionados,
 			ArrayList<String> marcasSeleccionadas, ArrayList<String> articulosSeleccionados,
@@ -469,44 +517,20 @@ public class VistaPrincipalController implements Initializable {
 		return resultado;
 	}
 	
-	private String asignarTipoCorteIngles(String tipo) {
-		if(tipo.contains("super")) return Cafetera.CAFETERA_SUPERAUTOMATICA;
-		else if(tipo.contains("goteo")) return Cafetera.CAFETERA_DE_GOTEO;
-		else if(tipo.contains("italiana eléctrica")) return Cafetera.CAFETERA_ITALIANA_ELECTRICA;
-		else if(tipo.contains("moka")) return Cafetera.CAFETERA_ITALIANA_ELECTRICA;
-		else if(tipo.contains("cápsulas")) return Cafetera.CAFETERA_DE_CAPSULAS;
-		else if(tipo.contains("espresso automática")) return Cafetera.CAFETERA_DE_CAPSULAS;
-		else if(tipo.contains("espresso manual")) return Cafetera.CAFETERA_EXPRESS;
-		else if(tipo.contains("émbolo")) return Cafetera.CAFETERA_EMBOLO;
-		else if(tipo.contains("Máquina de café")) return Cafetera.MAQUINA_CAFE;
-		else if(tipo.contains("italiana")) return Cafetera.CAFETERA_TRADICIONAL;
-		else if(tipo.startsWith("Cafetera")) return Cafetera.OTRAS;
-		else return "SIN CATEGORIA";	
+	
+	private boolean comprobarSiExiste(String marca) {
+		boolean existe = false;
+		for(String cafetera : marcasCafeteras)
+			if(marca.equals(cafetera)){
+				existe = true; break;
+			}
+		return existe;
 	}
 	
-	private String asignarTipoMediaMarkt(String tipo) {
-		tipo = normalizarString(tipo);
-		if(tipo.contains("Superautomática")) return Cafetera.CAFETERA_SUPERAUTOMATICA;
-		else if(tipo.contains("Express")) return Cafetera.CAFETERA_EXPRESS;
-		else if(tipo.contains("Exprés")) return Cafetera.CAFETERA_EXPRESS;
-		else if(tipo.contains("Goteo")) return Cafetera.CAFETERA_DE_GOTEO;
-		else if(tipo.contains("Tradicional")) return Cafetera.CAFETERA_TRADICIONAL;
-		else if(tipo.contains("Cápsulas")) return Cafetera.CAFETERA_DE_CAPSULAS;
-		else if(tipo.startsWith("Cafetera")) return Cafetera.CAFETERA_DE_CAPSULAS;
-		else return "SIN CATEGORIA";
-	}
-	
-	
-	@Override
-	public void initialize(URL arg0, ResourceBundle arg1) {
-		busquedaMediaMarkt();
-		busquedaElCorteIngles();
-		cargarMarcasCafeteras();
-		articulos = llenarObservableList(nombreArticulos);
-		listaArticulos.setItems(articulos);
-		marcas = llenarObservableList(marcasCafeteras);
-		listaMarcas.setItems(marcas);
-
+	private void cargarMarcasCafeteras() {
+		for(Cafetera cafetera : cafeteras) 
+			if(!comprobarSiExiste(cafetera.getMarca()))
+				marcasCafeteras.add(cafetera.getMarca());
 	}
 
 }
