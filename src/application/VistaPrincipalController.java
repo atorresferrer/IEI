@@ -169,9 +169,10 @@ public class VistaPrincipalController implements Initializable {
 
 	private ObservableList<CheckBox> llenarObservableList(ArrayList<String> listaStrings) {
 		ObservableList<CheckBox> lista = FXCollections.observableArrayList();
-
-			lista.add(new CheckBox(listaStrings[i]));
-		}
+		
+		for(String elemento : listaStrings)
+			lista.add(new CheckBox(elemento));
+		
 		return lista;
 	}
 
