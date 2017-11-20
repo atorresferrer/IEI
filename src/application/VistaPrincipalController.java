@@ -258,12 +258,11 @@ public class VistaPrincipalController implements Initializable {
 
 				//Normalizamos toda la informacion de la cafetera
 				marca = normalizarString(marca);
-				String categoria = extraerCategoriaElCorteIngles(informacion, marca);
-				
-				System.out.println("marca  = " + marca + " \nInformacion = " + categoria + "\nPrecio = " + precio + "\n");
+				String tipo = asignarTipoCorteIngles(extraerCategoriaElCorteIngles(informacion, marca));
+				System.out.println("marca  = " + marca + " \nInformacion = " + tipo + "\nPrecio = " + precio + "\n");
 				
 				//Cremaos un objeto cafetera
-				Cafetera cafetera = new Cafetera(marca, informacion, "tipo");
+				Cafetera cafetera = new Cafetera(marca, informacion, tipo);
 				cafetera.setPrecio(Comercio.EL_CORTE_INGLES, precio);
 				
 				// Guardamos la cafetera en la lista de cafeteras
@@ -405,6 +404,8 @@ public class VistaPrincipalController implements Initializable {
 		else if(tipo.contains("espresso manual")) return Cafetera.CAFETERA_EXPRESS;
 		else if(tipo.contains("émbolo")) return Cafetera.CAFETERA_EMBOLO;
 		else if(tipo.contains("Máquina de café")) return Cafetera.MAQUINA_CAFE;
+		else if(tipo.contains("italiana")) return Cafetera.CAFETERA_TRADICIONAL;
+		else if(tipo.startsWith("Cafetera")) return Cafetera.OTRAS;
 		else return "SIN CATEGORIA";	
 	}
 	
