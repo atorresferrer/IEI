@@ -81,9 +81,10 @@ public class VistaPrincipalController implements Initializable {
 	
 	//private final String TEXTO_BUSQUEDA = "Cafetera";
 
-	private String[] nombreArticulos = new String[] { "Cafeteras de capsulas", "Cafeteras de goteo",
+	/*private String[] nombreArticulos = new String[] { "Cafeteras de capsulas", "Cafeteras de goteo",
 			"Cafeteras expresso manual", "Cafeteras italianas", "Cafeteras de capsulas", "Cafeteras super automaticas",
-			"Cafetera expres", "Cafetera sin categoria" };
+			"Cafetera expres", "Cafetera sin categoria" };*/
+	private String[] nombreArticulos = Cafetera.getTiposDeCafeteras();
 
 	private String[] marcasCafeteras = new String[] { "Bosch", "Breville", "De Longhi", "Digrato", "Electrolux", "Illy",
 			"Jata", "Jura", "Kenwood", "Krups", "Lavazza", "Marcilla", "Menz & Konecke", "Miele", "Moulinex",

@@ -84,4 +84,10 @@ public class Cafetera {
 		return precio;
 	}
 	
+	public static String[] getTiposDeCafeteras() {
+		String[] tiposDeCafeteras = new String[] { CAFETERA_DE_CAPSULAS, CAFETERA_DE_GOTEO, CAFETERA_EMBOLO,
+				CAFETERA_ESPRESSO_AUTOMATICA, CAFETERA_EXPRESS, CAFETERA_ITALIANA_ELECTRICA, CAFETERA_SUPERAUTOMATICA,
+				CAFETERA_TRADICIONAL, MAQUINA_CAFE };
+		return tiposDeCafeteras;
+	}
 }
