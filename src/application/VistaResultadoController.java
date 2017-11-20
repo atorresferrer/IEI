@@ -47,7 +47,7 @@ public class VistaResultadoController implements Initializable {
 	public void initialize(URL location, ResourceBundle resources) {
 		//Recuperamos la informacion de las cafeteras a mostrar
 		listaCafeteras = FXCollections.observableArrayList();
-		inicializarListaCafeteras(VistaPrincipalController.getCafeteras());
+		inicializarListaCafeteras(VistaPrincipalController.getCafeterasFiltradas());
 
 		//Asignamos los valores a las columnas del tableView
 		colMarca.setCellValueFactory(e -> new SimpleStringProperty(e.getValue().getMarca()));
