@@ -108,10 +108,8 @@ public class VistaPrincipalController implements Initializable {
 	 * Devuelve las cafeteras para poder recuperarlas desde la ventana de resultados,
 	 * lo hacemos estatico para no tener que crear una instancia de VistaPrincipalController
 	 */
-<<<<<<< HEAD
+	
 	public static ArrayList <Cafetera> getCafeterasFiltradas() { return cafeterasFiltradas; }
-=======
-	public static ArrayList <Cafetera> getCafeteras() { return cafeteras; }
 	
 	private boolean comprobarSiExiste(String marca) {
 		boolean existe = false;
@@ -127,8 +125,7 @@ public class VistaPrincipalController implements Initializable {
 			if(!comprobarSiExiste(cafetera.getMarca()))
 				marcasCafeteras.add(cafetera.getMarca());
 	}
->>>>>>> 031f99f405e0e523e7c0008552d44e43c839cc58
-	 
+	
 
 	private void abrirResultado() {
 		try {
@@ -170,9 +167,9 @@ public class VistaPrincipalController implements Initializable {
 		return seleccion;
 	}
 
+	private ObservableList<CheckBox> llenarObservableList(ArrayList<String> listaStrings) {
 		ObservableList<CheckBox> lista = FXCollections.observableArrayList();
 
-		for (int i = 0; i < listaStrings.length; i++) {
 			lista.add(new CheckBox(listaStrings[i]));
 		}
 		return lista;
