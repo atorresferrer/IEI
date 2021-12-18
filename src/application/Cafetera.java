@@ -10,16 +10,18 @@ public class Cafetera {
 	private String tipo;
 	private List<Comercio> listaComercios = new ArrayList<Comercio>();
 	
+	// Esto es un comentario de prueba para Git
+	
 	public final static String CAFETERA_TRADICIONAL = "Cafetera Tradicional";
 	public final static String CAFETERA_DE_CAPSULAS = "Cafetera de capsulas";
 	public final static String CAFETERA_SUPERAUTOMATICA = "Cafetera Superautomatica";
 	public final static String CAFETERA_DE_GOTEO = "Cafetera de Goteo";
 	public final static String CAFETERA_EXPRESS = "Cafetera Express";
-	public final static String CAFETERA_ESPRESSO_AUTOMATICA = "Cafetera Espresso Autom·tica";
+	public final static String CAFETERA_ESPRESSO_AUTOMATICA = "Cafetera Espresso Autom√°tica";
 	public final static String CAFETERA_ITALIANA_ELECTRICA = "Cafetera Italiana Electrica";
 	public final static String OTRAS = "Otras cafeteras";
-	public final static String CAFETERA_EMBOLO = "Cafetera de Èmbolo";
-	public final static String MAQUINA_CAFE = "M·quina de cafÈ";
+	public final static String CAFETERA_EMBOLO = "Cafetera de √©mbolo";
+	public final static String MAQUINA_CAFE = "M√°quina de caf√©";
 	
 	
 	public Cafetera(String marca, String modelo, String tipo) {
@@ -95,7 +97,7 @@ public class Cafetera {
 	
 	private void limpiarModelo() {
 		ArrayList<String> palabrasClave = new ArrayList<>(Arrays.asList("para", "con",",",
-				"PresiÛn","15 bares","19 bares","CPotencia","Potencia", "Capacidad", "Hasta","Cuerpo", "Presion"));
+				"Presi√≥n","15 bares","19 bares","CPotencia","Potencia", "Capacidad", "Hasta","Cuerpo", "Presion"));
 		int posPalabraClave = 0;
 		for(String palabraClave : palabrasClave) {
 			posPalabraClave = modelo.toLowerCase().indexOf(palabraClave.toLowerCase());
